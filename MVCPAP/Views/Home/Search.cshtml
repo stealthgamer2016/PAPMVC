@@ -1,0 +1,40 @@
+﻿@{
+    Layout = "~/Views/Shared/LayoutPAP.cshtml";
+}
+    <style>
+        .videothumbnailddiv{
+            width:90%;
+            margin:auto;
+            margin-top:20px;
+            background-color:#DDDDDD;
+        }
+        .videothumbnailddiv:hover{
+            cursor:pointer;
+        }
+        .insideTN{
+            margin:20px;
+        }
+
+        .thumbnail{
+
+        }
+        .videotitle{
+            font-size:1.5em;
+        }
+
+    </style>
+
+    <div class="jumbotron">
+
+        <h1>Search for @ViewBag.Search</h1>
+
+
+        @foreach (var item in ViewBag.Videos)
+        {
+            <div class="row videothumbnailddiv">
+                <img src="~/images/@item.thumbnail" class="thumbnail insideTN" width="256" height="144" alt="Thumbnail" />
+                <p class="videotitle insideTN">@item.title</p>
+            </div>
+        }
+
+    </div>

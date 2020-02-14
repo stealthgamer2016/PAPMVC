@@ -1,0 +1,71 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Nome - @ViewBag.Title</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    <script src="~/Scripts/jquery-3.3.1.js"></script>
+    <script>
+        $(function () {
+
+            function keypressHandler(e) {
+                if (e.which == 13) {
+                    e.preventDefault();
+                    $(this).blur();
+                    $('#ButtonS').focus().click();
+                }
+            }
+
+            $('#myForm').keypress(keypressHandler);
+
+            $("#ButtonS").click(function () {
+                let Search = $("#Search").val();
+                if(Search && Search!="")
+                window.location.assign("../../../Home/Search/" + Search)
+            });
+        });
+    </script>
+    <style>
+        body {
+            padding-top: 0px;
+        }
+
+        .searchDiv {
+        }
+        .searchButton{
+            font-size:1.2em;
+            color:white;
+            vertical-align:central;
+            text-align:center;
+            float:left;
+            margin:auto;
+        }
+        .searchButton:hover{
+            cursor:pointer;
+        }
+    </style>
+</head>
+<body>
+    <form id="myForm">
+        <div class="navbar navbar-dark" style="background-color:gray;">
+            @Html.ActionLink("Nome", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+            <div class="row w-50">
+
+                <input type="text" id="Search" name="Search" value="" placeholder="Search" class="form-control form-control-sm text-dark" style="margin:auto" />
+                <p id="ButtonS" class="searchButton">Search</p>
+                @*<button id="ButtonS2" type="submit">Search</button>
+                @Html.ActionLink("Search", "Search", "Home", new { id = "ok" }, new { @class = "navbar-brand" })*@
+            </div>
+
+
+            <button class="btn btn-dark btn-sm"> Profile </button>
+
+        </div>
+        <div class="container">
+            @RenderBody()
+        </div>
+    </form>
+</body>
+</html>
