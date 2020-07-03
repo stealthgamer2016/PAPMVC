@@ -1,0 +1,55 @@
+﻿@model MVCPAP.Models.User
+@{
+    Layout = "~/Views/Shared/NavBar.cshtml";
+}
+<link href="~/Content/Formats.css" rel="stylesheet" />
+<script src="~/Scripts/ComunScripts.js"></script>
+<script src="~/Scripts/popper.js"></script>
+<link href="~/Content/bootstrap.css" rel="stylesheet" />
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+<script src="~/Scripts/bootstrap.js"></script>
+<h2>@Model.username 's Profile</h2>
+<img src="~/images/@Model.profilePicture" width="250" alt="Alternate Text" />
+<div>
+
+    email - @Model.email
+</div>
+
+@Html.ActionLink("Upload Video", "UploadVideo", "Account", FormMethod.Post)
+
+@Html.ActionLink("New username?", "ChangeUsername", "Account", Model, FormMethod.Post)
+
+<div class="btn-group dropright">
+    <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Dropright
+    </button>
+    <div class="dropdown-menu">
+        @Html.ActionLink("Upload Video", "UploadVideo", "Account", FormMethod.Post)
+
+        @Html.ActionLink("New username?", "ChangeUsername", "Account", Model, FormMethod.Post)
+    </div>
+</div>
+
+<div class="jumbotron">
+    <h3>Videos</h3>
+    @foreach (var item in ViewBag.Videos)
+    {
+        <div class="row videothumbnailddiv">
+
+            <div class="col">
+                <img id="h_@item.id" src="~/images/@item.thumbnail" class="thumbnail insideTN" width="256" height="144" alt="Thumbnail" />
+
+            </div>
+
+            <div class="col">
+                <div class="row videotitle insideTN h-50">
+                    <span id="t_@item.id">@item.title</span>
+                </div>
+            </div>
+
+        </div>
+    }
+
+</div>
+
+

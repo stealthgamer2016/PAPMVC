@@ -1,0 +1,538 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="DB1Model.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Comment">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="comment" Type="nvarchar" MaxLength="1000" />
+          <Property Name="video" Type="int" />
+          <Property Name="username" Type="nvarchar" MaxLength="100" />
+          <Property Name="discriminator" Type="int" />
+          <Property Name="createdAt" Type="date" />
+          <Property Name="upvotes" Type="int" />
+          <Property Name="downvotes" Type="int" />
+        </EntityType>
+        <EntityType Name="Follow">
+          <Key>
+            <PropertyRef Name="followerUsername" />
+            <PropertyRef Name="followerDiscriminator" />
+            <PropertyRef Name="followedUsername" />
+            <PropertyRef Name="followedDiscriminator" />
+          </Key>
+          <Property Name="followerUsername" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="followerDiscriminator" Type="int" Nullable="false" />
+          <Property Name="followedUsername" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="followedDiscriminator" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="username" />
+            <PropertyRef Name="discriminator" />
+          </Key>
+          <Property Name="username" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="discriminator" Type="int" Nullable="false" />
+          <Property Name="email" Type="nvarchar" MaxLength="250" />
+          <Property Name="password" Type="nvarchar" MaxLength="250" />
+          <Property Name="profilePicture" Type="nvarchar" MaxLength="250" />
+          <Property Name="createdAt" Type="date" />
+        </EntityType>
+        <EntityType Name="Video">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="title" Type="nvarchar" MaxLength="100" />
+          <Property Name="username" Type="nvarchar" MaxLength="100" />
+          <Property Name="discriminator" Type="int" />
+          <Property Name="videoFile" Type="nvarchar" MaxLength="250" Nullable="false" />
+          <Property Name="thumbnail" Type="nvarchar" MaxLength="250" Nullable="false" />
+          <Property Name="upvotes" Type="int" />
+          <Property Name="downvotes" Type="int" />
+          <Property Name="publishedAt" Type="date" />
+        </EntityType>
+        <Association Name="FK__Comment__68487DD7">
+          <End Role="User" Type="Self.User" Multiplicity="0..1" />
+          <End Role="Comment" Type="Self.Comment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="discriminator" />
+              <PropertyRef Name="username" />
+            </Principal>
+            <Dependent Role="Comment">
+              <PropertyRef Name="discriminator" />
+              <PropertyRef Name="username" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Comment__video__628FA481">
+          <End Role="Video" Type="Self.Video" Multiplicity="0..1" />
+          <End Role="Comment" Type="Self.Comment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Video">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Comment">
+              <PropertyRef Name="video" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Follow__6B24EA82">
+          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="Follow" Type="Self.Follow" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="discriminator" />
+              <PropertyRef Name="username" />
+            </Principal>
+            <Dependent Role="Follow">
+              <PropertyRef Name="followerDiscriminator" />
+              <PropertyRef Name="followerUsername" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Follow__6C190EBB">
+          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="Follow" Type="Self.Follow" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="discriminator" />
+              <PropertyRef Name="username" />
+            </Principal>
+            <Dependent Role="Follow">
+              <PropertyRef Name="followedDiscriminator" />
+              <PropertyRef Name="followedUsername" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Video__5FB337D6">
+          <End Role="User" Type="Self.User" Multiplicity="0..1" />
+          <End Role="Video" Type="Self.Video" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="discriminator" />
+              <PropertyRef Name="username" />
+            </Principal>
+            <Dependent Role="Video">
+              <PropertyRef Name="discriminator" />
+              <PropertyRef Name="username" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Function Name="udf_IsEmailAvaiable" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" ReturnType="bit">
+          <Parameter Name="email" Type="nvarchar" Mode="In" />
+        </Function>
+        <Function Name="udf_IsUsernameAvaiable" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" ReturnType="bit">
+          <Parameter Name="username" Type="nvarchar" Mode="In" />
+          <Parameter Name="discriminator" Type="int" Mode="In" />
+        </Function>
+        <Function Name="udf_LogIn" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" ReturnType="bit">
+          <Parameter Name="email" Type="nvarchar" Mode="In" />
+          <Parameter Name="password" Type="nvarchar" Mode="In" />
+        </Function>
+        <Function Name="ups_UpdateVideoPublishedAt" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="id" Type="int" Mode="In" />
+          <Parameter Name="publishedAt" Type="date" Mode="In" />
+        </Function>
+        <Function Name="usp_DeleteComment" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="id" Type="int" Mode="In" />
+        </Function>
+        <Function Name="usp_DeleteUser" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="username" Type="nvarchar" Mode="In" />
+          <Parameter Name="discriminator" Type="int" Mode="In" />
+        </Function>
+        <Function Name="usp_DeleteVideo" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="id" Type="int" Mode="In" />
+        </Function>
+        <Function Name="usp_GetVideosSearch" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="amount" Type="int" Mode="In" />
+          <Parameter Name="query" Type="nvarchar" Mode="In" />
+        </Function>
+        <Function Name="usp_InsertComment" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="comment" Type="nvarchar" Mode="In" />
+          <Parameter Name="video" Type="int" Mode="In" />
+          <Parameter Name="username" Type="nvarchar" Mode="In" />
+          <Parameter Name="discriminator" Type="int" Mode="In" />
+          <Parameter Name="createAt" Type="date" Mode="In" />
+        </Function>
+        <Function Name="usp_InsertUser" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="username" Type="nvarchar" Mode="In" />
+          <Parameter Name="discriminator" Type="int" Mode="In" />
+          <Parameter Name="password" Type="nvarchar" Mode="In" />
+          <Parameter Name="profilePicture" Type="nvarchar" Mode="In" />
+          <Parameter Name="createdAt" Type="date" Mode="In" />
+        </Function>
+        <Function Name="usp_InsertVideo" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="title" Type="nvarchar" Mode="In" />
+          <Parameter Name="username" Type="nvarchar" Mode="In" />
+          <Parameter Name="discriminator" Type="int" Mode="In" />
+          <Parameter Name="videoFile" Type="nvarchar" Mode="In" />
+          <Parameter Name="thumbnail" Type="nvarchar" Mode="In" />
+          <Parameter Name="upvotes" Type="int" Mode="In" />
+          <Parameter Name="downvotes" Type="int" Mode="In" />
+          <Parameter Name="publishedAt" Type="date" Mode="In" />
+        </Function>
+        <Function Name="usp_UpdateComment" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="id" Type="int" Mode="In" />
+          <Parameter Name="comment" Type="nvarchar" Mode="In" />
+          <Parameter Name="video" Type="int" Mode="In" />
+          <Parameter Name="username" Type="nvarchar" Mode="In" />
+          <Parameter Name="discriminator" Type="int" Mode="In" />
+          <Parameter Name="createAt" Type="date" Mode="In" />
+        </Function>
+        <Function Name="usp_UpdateUser" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="username" Type="nvarchar" Mode="In" />
+          <Parameter Name="discriminator" Type="int" Mode="In" />
+          <Parameter Name="password" Type="nvarchar" Mode="In" />
+          <Parameter Name="profilePicture" Type="nvarchar" Mode="In" />
+          <Parameter Name="createdAt" Type="date" Mode="In" />
+        </Function>
+        <Function Name="usp_UpdateUserUsername" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="username" Type="nvarchar" Mode="In" />
+          <Parameter Name="discriminator" Type="int" Mode="In" />
+          <Parameter Name="newUsername" Type="nvarchar" Mode="In" />
+        </Function>
+        <Function Name="usp_UpdateVideo" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="id" Type="int" Mode="In" />
+          <Parameter Name="title" Type="nvarchar" Mode="In" />
+          <Parameter Name="username" Type="nvarchar" Mode="In" />
+          <Parameter Name="discriminator" Type="int" Mode="In" />
+          <Parameter Name="videoFile" Type="nvarchar" Mode="In" />
+          <Parameter Name="thumbnail" Type="nvarchar" Mode="In" />
+          <Parameter Name="upvotes" Type="int" Mode="In" />
+          <Parameter Name="downvotes" Type="int" Mode="In" />
+          <Parameter Name="publishedAt" Type="date" Mode="In" />
+        </Function>
+        <EntityContainer Name="DB1ModelStoreContainer">
+          <EntitySet Name="Comment" EntityType="Self.Comment" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Follow" EntityType="Self.Follow" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Video" EntityType="Self.Video" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK__Comment__68487DD7" Association="Self.FK__Comment__68487DD7">
+            <End Role="User" EntitySet="User" />
+            <End Role="Comment" EntitySet="Comment" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Comment__video__628FA481" Association="Self.FK__Comment__video__628FA481">
+            <End Role="Video" EntitySet="Video" />
+            <End Role="Comment" EntitySet="Comment" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Follow__6B24EA82" Association="Self.FK__Follow__6B24EA82">
+            <End Role="User" EntitySet="User" />
+            <End Role="Follow" EntitySet="Follow" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Follow__6C190EBB" Association="Self.FK__Follow__6C190EBB">
+            <End Role="User" EntitySet="User" />
+            <End Role="Follow" EntitySet="Follow" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Video__5FB337D6" Association="Self.FK__Video__5FB337D6">
+            <End Role="User" EntitySet="User" />
+            <End Role="Video" EntitySet="Video" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="DB1Model" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Comment">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="comment1" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="video" Type="Int32" />
+          <Property Name="username" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="discriminator" Type="Int32" />
+          <Property Name="createdAt" Type="DateTime" Precision="0" />
+          <Property Name="upvotes" Type="Int32" />
+          <Property Name="downvotes" Type="Int32" />
+          <NavigationProperty Name="User" Relationship="Self.FK__Comment__68487DD7" FromRole="Comment" ToRole="User" />
+          <NavigationProperty Name="Video1" Relationship="Self.FK__Comment__video__628FA481" FromRole="Comment" ToRole="Video" />
+        </EntityType>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="username" />
+            <PropertyRef Name="discriminator" />
+          </Key>
+          <Property Name="username" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="discriminator" Type="Int32" Nullable="false" />
+          <Property Name="email" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="password" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="profilePicture" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="createdAt" Type="DateTime" Precision="0" />
+          <NavigationProperty Name="Comment" Relationship="Self.FK__Comment__68487DD7" FromRole="User" ToRole="Comment" />
+          <NavigationProperty Name="Video" Relationship="Self.FK__Video__5FB337D6" FromRole="User" ToRole="Video" />
+          <NavigationProperty Name="User1" Relationship="Self.Follow" FromRole="User" ToRole="User1" />
+          <NavigationProperty Name="User2" Relationship="Self.Follow" FromRole="User1" ToRole="User" />
+        </EntityType>
+        <EntityType Name="Video">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="title" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="username" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="discriminator" Type="Int32" />
+          <Property Name="videoFile" Type="String" MaxLength="250" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="thumbnail" Type="String" MaxLength="250" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="upvotes" Type="Int32" />
+          <Property Name="downvotes" Type="Int32" />
+          <Property Name="publishedAt" Type="DateTime" Precision="0" />
+          <NavigationProperty Name="Comment" Relationship="Self.FK__Comment__video__628FA481" FromRole="Video" ToRole="Comment" />
+          <NavigationProperty Name="User" Relationship="Self.FK__Video__5FB337D6" FromRole="Video" ToRole="User" />
+        </EntityType>
+        <Association Name="FK__Comment__68487DD7">
+          <End Role="User" Type="Self.User" Multiplicity="0..1" />
+          <End Role="Comment" Type="Self.Comment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="discriminator" />
+              <PropertyRef Name="username" />
+            </Principal>
+            <Dependent Role="Comment">
+              <PropertyRef Name="discriminator" />
+              <PropertyRef Name="username" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Comment__video__628FA481">
+          <End Role="Video" Type="Self.Video" Multiplicity="0..1" />
+          <End Role="Comment" Type="Self.Comment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Video">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Comment">
+              <PropertyRef Name="video" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Video__5FB337D6">
+          <End Role="User" Type="Self.User" Multiplicity="0..1" />
+          <End Role="Video" Type="Self.Video" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="discriminator" />
+              <PropertyRef Name="username" />
+            </Principal>
+            <Dependent Role="Video">
+              <PropertyRef Name="discriminator" />
+              <PropertyRef Name="username" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Follow">
+          <End Role="User" Type="Self.User" Multiplicity="*" />
+          <End Role="User1" Type="Self.User" Multiplicity="*" />
+        </Association>
+        <EntityContainer Name="DB1Entities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Comment" EntityType="Self.Comment" />
+          <EntitySet Name="User" EntityType="Self.User" />
+          <EntitySet Name="Video" EntityType="Self.Video" />
+          <AssociationSet Name="FK__Comment__68487DD7" Association="Self.FK__Comment__68487DD7">
+            <End Role="User" EntitySet="User" />
+            <End Role="Comment" EntitySet="Comment" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Comment__video__628FA481" Association="Self.FK__Comment__video__628FA481">
+            <End Role="Video" EntitySet="Video" />
+            <End Role="Comment" EntitySet="Comment" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Video__5FB337D6" Association="Self.FK__Video__5FB337D6">
+            <End Role="User" EntitySet="User" />
+            <End Role="Video" EntitySet="Video" />
+          </AssociationSet>
+          <AssociationSet Name="Follow" Association="Self.Follow">
+            <End Role="User" EntitySet="User" />
+            <End Role="User1" EntitySet="User" />
+          </AssociationSet>
+          <FunctionImport Name="ups_UpdateVideoPublishedAt">
+            <Parameter Name="id" Mode="In" Type="Int32" />
+            <Parameter Name="publishedAt" Mode="In" Type="DateTime" />
+          </FunctionImport>
+          <FunctionImport Name="usp_DeleteComment">
+            <Parameter Name="id" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="usp_DeleteUser">
+            <Parameter Name="username" Mode="In" Type="String" />
+            <Parameter Name="discriminator" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="usp_DeleteVideo">
+            <Parameter Name="id" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="usp_GetVideosSearch" ReturnType="Collection(DB1Model.usp_GetVideosSearch_Result)">
+            <Parameter Name="amount" Mode="In" Type="Int32" />
+            <Parameter Name="query" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="usp_InsertComment">
+            <Parameter Name="comment" Mode="In" Type="String" />
+            <Parameter Name="video" Mode="In" Type="Int32" />
+            <Parameter Name="username" Mode="In" Type="String" />
+            <Parameter Name="discriminator" Mode="In" Type="Int32" />
+            <Parameter Name="createAt" Mode="In" Type="DateTime" />
+          </FunctionImport>
+          <FunctionImport Name="usp_InsertUser">
+            <Parameter Name="username" Mode="In" Type="String" />
+            <Parameter Name="discriminator" Mode="In" Type="Int32" />
+            <Parameter Name="password" Mode="In" Type="String" />
+            <Parameter Name="profilePicture" Mode="In" Type="String" />
+            <Parameter Name="createdAt" Mode="In" Type="DateTime" />
+          </FunctionImport>
+          <FunctionImport Name="usp_InsertVideo">
+            <Parameter Name="title" Mode="In" Type="String" />
+            <Parameter Name="username" Mode="In" Type="String" />
+            <Parameter Name="discriminator" Mode="In" Type="Int32" />
+            <Parameter Name="videoFile" Mode="In" Type="String" />
+            <Parameter Name="thumbnail" Mode="In" Type="String" />
+            <Parameter Name="upvotes" Mode="In" Type="Int32" />
+            <Parameter Name="downvotes" Mode="In" Type="Int32" />
+            <Parameter Name="publishedAt" Mode="In" Type="DateTime" />
+          </FunctionImport>
+          <FunctionImport Name="usp_UpdateComment">
+            <Parameter Name="id" Mode="In" Type="Int32" />
+            <Parameter Name="comment" Mode="In" Type="String" />
+            <Parameter Name="video" Mode="In" Type="Int32" />
+            <Parameter Name="username" Mode="In" Type="String" />
+            <Parameter Name="discriminator" Mode="In" Type="Int32" />
+            <Parameter Name="createAt" Mode="In" Type="DateTime" />
+          </FunctionImport>
+          <FunctionImport Name="usp_UpdateUser">
+            <Parameter Name="username" Mode="In" Type="String" />
+            <Parameter Name="discriminator" Mode="In" Type="Int32" />
+            <Parameter Name="password" Mode="In" Type="String" />
+            <Parameter Name="profilePicture" Mode="In" Type="String" />
+            <Parameter Name="createdAt" Mode="In" Type="DateTime" />
+          </FunctionImport>
+          <FunctionImport Name="usp_UpdateUserUsername">
+            <Parameter Name="username" Mode="In" Type="String" />
+            <Parameter Name="discriminator" Mode="In" Type="Int32" />
+            <Parameter Name="newUsername" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="usp_UpdateVideo">
+            <Parameter Name="id" Mode="In" Type="Int32" />
+            <Parameter Name="title" Mode="In" Type="String" />
+            <Parameter Name="username" Mode="In" Type="String" />
+            <Parameter Name="discriminator" Mode="In" Type="Int32" />
+            <Parameter Name="videoFile" Mode="In" Type="String" />
+            <Parameter Name="thumbnail" Mode="In" Type="String" />
+            <Parameter Name="upvotes" Mode="In" Type="Int32" />
+            <Parameter Name="downvotes" Mode="In" Type="Int32" />
+            <Parameter Name="publishedAt" Mode="In" Type="DateTime" />
+          </FunctionImport>
+        </EntityContainer>
+        <ComplexType Name="usp_GetVideosSearch_Result">
+          <Property Type="Int32" Name="id" Nullable="false" />
+          <Property Type="String" Name="title" Nullable="true" MaxLength="100" />
+          <Property Type="String" Name="thumbnail" Nullable="false" MaxLength="250" />
+          <Property Type="String" Name="videoFile" Nullable="false" MaxLength="250" />
+          <Property Type="Int32" Name="discriminator" Nullable="true" />
+          <Property Type="String" Name="username" Nullable="true" MaxLength="100" />
+        </ComplexType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="DB1ModelStoreContainer" CdmEntityContainer="DB1Entities">
+          <EntitySetMapping Name="Comment">
+            <EntityTypeMapping TypeName="DB1Model.Comment">
+              <MappingFragment StoreEntitySet="Comment">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="comment1" ColumnName="comment" />
+                <ScalarProperty Name="video" ColumnName="video" />
+                <ScalarProperty Name="username" ColumnName="username" />
+                <ScalarProperty Name="discriminator" ColumnName="discriminator" />
+                <ScalarProperty Name="createdAt" ColumnName="createdAt" />
+                <ScalarProperty Name="upvotes" ColumnName="upvotes" />
+                <ScalarProperty Name="downvotes" ColumnName="downvotes" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="User">
+            <EntityTypeMapping TypeName="DB1Model.User">
+              <MappingFragment StoreEntitySet="User">
+                <ScalarProperty Name="username" ColumnName="username" />
+                <ScalarProperty Name="discriminator" ColumnName="discriminator" />
+                <ScalarProperty Name="email" ColumnName="email" />
+                <ScalarProperty Name="password" ColumnName="password" />
+                <ScalarProperty Name="profilePicture" ColumnName="profilePicture" />
+                <ScalarProperty Name="createdAt" ColumnName="createdAt" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Video">
+            <EntityTypeMapping TypeName="DB1Model.Video">
+              <MappingFragment StoreEntitySet="Video">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="title" ColumnName="title" />
+                <ScalarProperty Name="username" ColumnName="username" />
+                <ScalarProperty Name="discriminator" ColumnName="discriminator" />
+                <ScalarProperty Name="videoFile" ColumnName="videoFile" />
+                <ScalarProperty Name="thumbnail" ColumnName="thumbnail" />
+                <ScalarProperty Name="upvotes" ColumnName="upvotes" />
+                <ScalarProperty Name="downvotes" ColumnName="downvotes" />
+                <ScalarProperty Name="publishedAt" ColumnName="publishedAt" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <AssociationSetMapping Name="Follow" TypeName="DB1Model.Follow" StoreEntitySet="Follow">
+            <EndProperty Name="User">
+              <ScalarProperty Name="username" ColumnName="followerUsername" />
+              <ScalarProperty Name="discriminator" ColumnName="followerDiscriminator" />
+            </EndProperty>
+            <EndProperty Name="User1">
+              <ScalarProperty Name="username" ColumnName="followedUsername" />
+              <ScalarProperty Name="discriminator" ColumnName="followedDiscriminator" />
+            </EndProperty>
+          </AssociationSetMapping>
+          <FunctionImportMapping FunctionImportName="ups_UpdateVideoPublishedAt" FunctionName="DB1Model.Store.ups_UpdateVideoPublishedAt" />
+          <FunctionImportMapping FunctionImportName="usp_DeleteComment" FunctionName="DB1Model.Store.usp_DeleteComment" />
+          <FunctionImportMapping FunctionImportName="usp_DeleteUser" FunctionName="DB1Model.Store.usp_DeleteUser" />
+          <FunctionImportMapping FunctionImportName="usp_DeleteVideo" FunctionName="DB1Model.Store.usp_DeleteVideo" />
+          <FunctionImportMapping FunctionImportName="usp_GetVideosSearch" FunctionName="DB1Model.Store.usp_GetVideosSearch">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="DB1Model.usp_GetVideosSearch_Result">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="title" ColumnName="title" />
+                <ScalarProperty Name="thumbnail" ColumnName="thumbnail" />
+                <ScalarProperty Name="videoFile" ColumnName="videoFile" />
+                <ScalarProperty Name="discriminator" ColumnName="discriminator" />
+                <ScalarProperty Name="username" ColumnName="username" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="usp_InsertComment" FunctionName="DB1Model.Store.usp_InsertComment" />
+          <FunctionImportMapping FunctionImportName="usp_InsertUser" FunctionName="DB1Model.Store.usp_InsertUser" />
+          <FunctionImportMapping FunctionImportName="usp_InsertVideo" FunctionName="DB1Model.Store.usp_InsertVideo" />
+          <FunctionImportMapping FunctionImportName="usp_UpdateComment" FunctionName="DB1Model.Store.usp_UpdateComment" />
+          <FunctionImportMapping FunctionImportName="usp_UpdateUser" FunctionName="DB1Model.Store.usp_UpdateUser" />
+          <FunctionImportMapping FunctionImportName="usp_UpdateUserUsername" FunctionName="DB1Model.Store.usp_UpdateUserUsername" />
+          <FunctionImportMapping FunctionImportName="usp_UpdateVideo" FunctionName="DB1Model.Store.usp_UpdateVideo" />
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

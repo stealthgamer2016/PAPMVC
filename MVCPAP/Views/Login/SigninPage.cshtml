@@ -1,0 +1,66 @@
+﻿@model MVCPAP.Models.User
+@{
+    Layout = "~/Views/Shared/NavBar.cshtml";
+}
+<style>
+
+    input {
+        margin: auto;
+        margin-top: 10px;
+        width: 50%;
+        display: block;
+    }
+
+    #password {
+        width: auto;
+    }
+
+    #email {
+        width: auto;
+    }
+
+    .signinbtn {
+        color: #28a745;
+        background-color: #f5f5f5;
+    }
+
+    .divSignin {
+        /*margin: auto;*/
+        width: 50%;
+        padding: 25px;
+        position: relative;
+        margin-top: 50px;
+        left: 35%;
+        display: flex;
+    }
+</style>
+
+<script>
+
+</script>
+
+<div class="divSignin">
+
+    @using (Html.BeginForm("Signin", "Login", FormMethod.Post))
+    {
+
+        <h2 class="m-auto align-content-center"> Sign in </h2>
+
+        @Html.EditorFor(model => model.email, new { htmlAttributes = new { @class = "form-control", @placeholder = "Email" } })
+        @Html.ValidationMessageFor(model => model.email)
+
+        @Html.EditorFor(model => model.username, new { htmlAttributes = new { @class = "form-control", @placeholder = "Username" } })
+        @Html.ValidationMessageFor(model => model.username)
+
+        @Html.EditorFor(model => model.password, new { htmlAttributes = new { @class = "form-control", @placeholder = "Password", @type = "password" } })
+        @Html.ValidationMessageFor(model => model.password)
+
+        <input type="submit" name="name" class="btn btn-success signinbtn" value="Sign in" />
+        @Html.DisplayFor(model => model.LoginErrorMessage)
+
+
+    }
+
+</div>
+
+

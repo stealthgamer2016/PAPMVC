@@ -1,0 +1,35 @@
+﻿@model MVCPAP.Models.User
+@{
+    Layout = "~/Views/Shared/NavBar.cshtml";
+}
+<link href="~/Content/Formats.css" rel="stylesheet" />
+<script src="~/Scripts/ComunScripts.js"></script>
+<h2>@ViewBag.user.username 's Profile</h2>
+<img src="~/images/@ViewBag.user.profilePicture" width="250" alt="Alternate Text" />
+<div>
+
+    email - @ViewBag.user.email
+</div>
+
+
+<div class="jumbotron">
+    <h3>Videos</h3>
+    @foreach (var item in ViewBag.Videos)
+    {
+        <div class="row videothumbnailddiv">
+
+            <div class="col">
+                <img id="h_@item.id" src="~/images/@item.thumbnail" class="thumbnail insideTN" width="256" height="144" alt="Thumbnail" />
+
+            </div>
+
+            <div class="col">
+                <div class="row videotitle insideTN h-50">
+                    <span id="t_@item.id">@item.title</span>
+                </div>
+            </div>
+
+        </div>
+    }
+
+</div>

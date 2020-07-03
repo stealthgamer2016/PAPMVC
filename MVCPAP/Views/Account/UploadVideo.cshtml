@@ -1,0 +1,36 @@
+﻿@model MVCPAP.Models.Video
+@{
+    Layout = "~/Views/Shared/NavBar.cshtml";
+}
+<link href="~/Content/bootstrap.css" rel="stylesheet" />
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+<script src="~/Scripts/ComunScripts.js"></script>
+<script>
+    $(function () {
+
+    });
+</script>
+
+
+<div class="row">
+
+    @using (Html.BeginForm("PostVideo", "Account", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        <div class="row">
+            @Html.LabelFor(Model => Model.title)
+            @Html.EditorFor(Model => Model.title)
+        </div>
+        <div class="row">
+           @Html.LabelFor(Model => Model.description)
+           @Html.EditorFor(Model => Model.description)
+        </div>
+        <label for="file">Upload Image:</label>
+        <input type="file" id="file" name="file" value="" />
+        <input type="submit" name="name" value="Upload" />
+        <br />
+        @ViewBag.Message
+    }
+
+</div>
+
+

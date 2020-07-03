@@ -1,40 +1,35 @@
 ﻿@{
-    Layout = "~/Views/Shared/LayoutPAP.cshtml";
+    Layout = "~/Views/Shared/NavBar.cshtml";
 }
-    <style>
-        .videothumbnailddiv{
-            width:90%;
-            margin:auto;
-            margin-top:20px;
-            background-color:#DDDDDD;
-        }
-        .videothumbnailddiv:hover{
-            cursor:pointer;
-        }
-        .insideTN{
-            margin:20px;
-        }
+<link href="~/Content/Formats.css" rel="stylesheet" />
+<script src="~/Scripts/ComunScripts.js"></script>
+<link href="~/Content/bootstrap.css" rel="stylesheet" />
+<div class="jumbotron">
 
-        .thumbnail{
-
-        }
-        .videotitle{
-            font-size:1.5em;
-        }
-
-    </style>
-
-    <div class="jumbotron">
-
-        <h1>Search for @ViewBag.Search</h1>
+    <h1>Search for @ViewBag.Search</h1>
 
 
-        @foreach (var item in ViewBag.Videos)
-        {
-            <div class="row videothumbnailddiv">
-                <img src="~/images/@item.thumbnail" class="thumbnail insideTN" width="256" height="144" alt="Thumbnail" />
-                <p class="videotitle insideTN">@item.title</p>
+    @foreach (var item in ViewBag.Videos)
+    {
+        <div class="row videothumbnailddiv">
+
+            <div class="col">
+                <img id="h_@item.id" src="~/images/@item.thumbnail" class="thumbnail insideTN" width="256" height="144" alt="Thumbnail" />
+
             </div>
-        }
 
-    </div>
+            <div class="col">
+                <div class="row videotitle insideTN h-50">
+                    <span id="t_@item.id">@item.title</span>
+                </div>
+                <div class="row h-50">
+                    <span id="@item.discriminator-@item.username" class="VideoAuthor">@item.discriminator#@item.username</span>
+                </div>
+            </div>
+
+        </div>
+    }
+
+    <span id="Page">@ViewBag.page</span>
+
+</div>

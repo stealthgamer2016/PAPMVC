@@ -1,0 +1,230 @@
+﻿@model MVCPAP.Models.VideoData
+@{
+    Layout = "~/Views/Shared/NavBar.cshtml";
+}
+<script src="~/Scripts/ComunScripts.js"></script>
+<link href="~/Content/Formats.css" rel="stylesheet" />
+
+<script>
+    $(function () {
+
+        var upvoted = @ViewBag.upvoted;
+        var logged = @ViewBag.loggedin;
+        $('body').click(function (evt) {
+
+       if(evt.target.id.startsWith("buttonOptions_"))
+          return;
+       //For descendants of menu_content being clicked, remove this check if you do not want to put constraint on descendants.
+       if($(evt.target).closest('.buttonOptions').length)
+                return;
+
+                   if(evt.target.id.startsWith("divOptions_"))
+          return;
+       //For descendants of menu_content being clicked, remove this check if you do not want to put constraint on descendants.
+       if($(evt.target).closest('.commentOptions').length)
+          return;
+
+      //Do processing of click event here for every element except with id menu_content
+                    $(".commentOptions").hide();
+});
+
+
+        $("#myForm").ready(function () {
+            $("#AddCommentDiv").hide();
+            $(".commentOptions").hide();
+            $(".LabelComment").hide();
+                            $("#AddCommentError").hide();
+            //$(".LabelComment").prop('readonly', true);
+            //$("div[id^='divOptions']").hide();
+            if (upvoted == 1) {
+            $("#like").attr("src", "../../images/like.png");
+            }
+        });
+
+        $("#buttonAddComment").click(function (b) {
+            var userId = "@Session["userId"]";
+            if (userId != null && userId != undefined && userId != '') {
+                $("#AddCommentDiv").show();
+                $("#textComment").focus();
+                $("#buttonAddComment").hide();
+            }
+            else alert("You need to log in order to do that");
+
+        });
+
+        $("#buttonAddCommentSend").click(function (b) {
+            var text = $("#textComment").val();
+            //location.href = '<%: Url.Action("PostComment", "Home",new { id="1234-stealthgamer",id2="'+text+'" }) %>';
+            $("#textComment").focus();
+            if (!text || text== undefined || text =='') return;
+
+             @*$.ajax({
+                url: "../../../Home/PostComment/@ViewBag.video.id?user=2016-stealthgamer&text="+text,
+                type: "GET",
+                 error: function (response) {
+                     console.log(response);
+            },
+                 success: function (response) {
+                     console.log(response);
+            }
+        });*@
+
+
+            //alert("Comment: " + text);
+            $("#AddCommentDiv").hide();
+            $("#buttonAddComment").show();
+            $("#textComment").val('');
+        });
+
+        $("#cancelComment").click(function () {
+            $("#AddCommentDiv").hide();
+            $("#buttonAddComment").show();
+        });
+
+        function keypressHandler(e) {
+            if (e.which == 13) {
+                if ($("#AddCommentDiv").is(":visible")) {
+                    e.preventDefault();
+                    $(this).blur();
+                    $('#buttonAddCommentSend').focus().click();
+                }
+            }
+        }
+
+        $('#myForm').keypress(keypressHandler);
+
+        $(".buttonOptions").click(function (b) {
+            var id = b.toElement.id.split('_')[1];
+            var WasVisible = $("#divOptions_" + id).is(":visible");
+            $(".commentOptions").hide();
+            $("#divOptions_" + id).toggle();
+            if (WasVisible)
+                $("#divOptions_" + id).hide();
+        });
+
+        $(".DeleteComment").click(function (p) {
+            var id = p.toElement.id.split('_')[1];
+
+            $.ajax({
+                    url: "../../../Home/DeleteComment/"+id,
+                    type: "GET",
+                error: function (response) {
+console.log(response);
+                },
+                success: function (response) {
+console.log(response);
+                }
+            });
+                        $(".commentOptions").hide();
+
+        });
+
+        $(".EditComment").click(function (p) {
+            var id = p.toElement.id.split('_')[1];
+            var text = $("#labelComment_" + id).val();
+            if ($("#labelComment_" + id).is(':visible')) {
+
+                $.ajax({
+                    url: "../../../Home/EditComment/"+id+"?text="+text,
+                    type: "GET",
+                error: function (response) {
+console.log(response);
+                },
+                success: function (response) {
+                    console.log(response);
+                }
+            });
+                            $(".commentOptions").hide();
+            }
+            else
+            $("#labelComment_"+id).toggle();
+
+        });
+
+        $("#like").click(function () {
+            if (upvoted == 0 && logged == 1) {
+                $.ajax({
+                    url: "../../../Home/UpvoteVideo/" + @Model.id,
+                    type: "GET",
+                    error: function (response) {
+                        console.log(response);
+                    },
+                    success: function (response) {
+                        console.log(response);
+                    }
+                });
+                $("#like").attr("src", "../../images/like.png");
+                var likes = parseInt($("#likes").text()) + 1;
+                $("#likes").text(likes);
+                upvoted = 1;
+            }
+            else if (upvoted == 1 && logged == 1) {
+                $.ajax({
+                    url: "../../../Home/DownvoteVideo/" + @Model.id,
+                    type: "GET",
+                    error: function (response) {
+                        console.log(response);
+                    },
+                    success: function (response) {
+                        console.log(response);
+                    }
+                });
+
+                $("#like").attr("src", "../../images/unlike.png");
+                var likes = parseInt($("#likes").text()) - 1;
+                $("#likes").text(likes);
+                upvoted = 0;
+            }
+            else alert("You need to log in order to do that");
+            
+
+        });
+
+    });
+</script>
+
+
+<div class="jumbotron">
+    <div class="row">
+        <video class=" VideoPlayer" autoplay="autoplay" controls="controls">
+            <source src="~/Videos/@Model.videoFile" type="video/mp4" />
+        </video>
+    </div>
+    <div class="row m-2">
+        <h2>@Model.title</h2>
+
+
+    </div>
+
+    <div class="row">
+
+        <span id="@Model.discriminator-@Model.username" class="VideoAuthor insideTN">@Model.discriminator#@Model.username</span>
+
+        <div class="m-auto">
+            @{
+                MVCPAP.Models.Comment comment = new MVCPAP.Models.Comment();
+                MVCPAP.Models.Video video = new MVCPAP.Models.Video();
+                video.id = Model.id;
+                comment.video = video;
+                Html.RenderPartial("AddCommentForm", comment);
+            }
+        </div>
+
+
+
+        <div class="row m-2" style="float:right;">
+            <img id="like" src="~/images/unlike.png" class="buttonUpvote" alt="Upvote" />
+            <label id="likes">@Model.upVotes</label>
+        </div>
+
+
+        @{
+            MVCPAP.Business.CommentBll commentBll = new MVCPAP.Business.CommentBll();
+            List<MVCPAP.Models.Comment> comments = commentBll.GetCommentsByVideoId(Model.id);
+            Html.RenderPartial("CommentSection", comments);
+        }
+    </div>
+
+    <div id="someDiv"></div>
+
+</div>

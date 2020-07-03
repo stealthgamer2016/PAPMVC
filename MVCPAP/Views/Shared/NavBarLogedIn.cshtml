@@ -1,0 +1,52 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+    <script src="~/Scripts/jquery-3.3.1.js"></script>
+    <link href="~/Content/bootstrap.css" rel="stylesheet" />
+    <script src="~/Scripts/bootstrap.bundle.js"></script>
+    <script src="~/MyScripts/JavaScript.js"></script>
+    <link href="~/MyScripts/StyleSheet1.css" rel="stylesheet" />
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top scrolling-navbar rgba-gradient">
+        <div class="container">
+            @Html.ActionLink("Query", "Index", "Home", new { area = "" }, new { @class = "navbar-brand text-success" })
+            <div class="collapse navbar-collapse" id="navbarSupportedContent-7">
+                <ul class="navbar-nav mr-auto smooth-scroll">
+                    <li class="nav-item">
+                        @using (Html.BeginForm("Logout", "Login", FormMethod.Post))
+                        {
+                            <input type="submit" class="btn" name="name" value="Log out" />
+                        }
+                    </li>
+                    <li class="nav-item">
+                        @Html.ActionLink(Session["userId"].ToString().Replace('-', '#'), "ProfilePage", "Home", new { id = Session["userId"] }, new { @class = "navbar-brand" })
+                    </li>
+                    <li>
+                        @Html.ActionLink("Upload Video", "UploadVideoPage", "Account", new { id = "" }, FormMethod.Post)
+
+                        @*@Html.ActionLink("New username?", "ChangeUsername", "Account", FormMethod.Post)*@
+                    </li>
+                </ul>
+                <form id="formsearch" class="form-inline" action="~/Home/SearchPage" method="post">
+                    <input id="SearchQuery" class="form-control mr-sm-2" name="SearchQuery" type="search" placeholder="Search" aria-label="Search">
+                    <button class="btn btn-outline-dark my-2 my-sm-0" type="submit">Search</button>
+                </form>
+            </div>
+        </div>
+    </nav>
+
+    @RenderBody()
+
+    @*<div class="position-fixed">
+            <h2>Fixed</h2>
+            texto texto teto textos
+        </div>*@
+
+
+</body>
+</html>

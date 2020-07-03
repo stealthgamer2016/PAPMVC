@@ -1,0 +1,30 @@
+﻿@model MVCPAP.Models.User
+@{
+    Layout = "~/Views/Shared/NavBar.cshtml";
+}
+
+<style>
+    .profilepicture {
+        width: 100px;
+        float: left;
+        margin: 10px;
+        margin-bottom:20px;
+    }
+</style>
+
+<div class="container container-fluid mb-5 Content">
+    <div>
+        <h2>@Model.discriminator#@Model.username</h2>
+        <img class="profilepicture" src="~/images/@Model.profilePicture" alt="Profile picture" />
+    </div>
+</div>
+
+<br /><br />
+      <br />
+
+@{
+    MVCPAP.Business.VideoBll videoBll = new MVCPAP.Business.VideoBll();
+    List<MVCPAP.Models.Video> videos = videoBll.GetVideosByUserId(Model.discriminator + "-" + Model.username);
+    Html.RenderPartial("UserVideos", videos);
+}
+

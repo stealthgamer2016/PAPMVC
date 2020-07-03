@@ -58,6 +58,8 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -129,28 +131,133 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Business\CommentBll.cs" />
+    <Compile Include="Business\UserBll.cs" />
+    <Compile Include="Business\VideoBll.cs" />
+    <Compile Include="Comment.cs">
+      <DependentUpon>ModelTeste.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\Comment.cs">
+      <DependentUpon>modelsPap3.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\modelsPap3.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>modelsPap3.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\modelsPap3.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>modelsPap3.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\modelsPap3.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>modelsPap3.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="Models\User.cs">
+      <DependentUpon>modelsPap3.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\usp_GetVideosSearch_Result.cs">
+      <DependentUpon>modelsPap3.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Video.cs">
+      <DependentUpon>modelsPap3.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\VideoData.cs" />
+    <Compile Include="ModelTeste.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ModelTeste.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelTeste.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ModelTeste.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelTeste.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ModelTeste.edmx</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="User.cs">
+      <DependentUpon>ModelTeste.tt</DependentUpon>
+    </Compile>
+    <Compile Include="usp_GetVideosSearch_Result.cs">
+      <DependentUpon>ModelTeste.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Video.cs">
+      <DependentUpon>ModelTeste.tt</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_Data\DB1.mdf" />
+    <Content Include="App_Data\DB1_log.ldf">
+      <DependentUpon>DB1.mdf</DependentUpon>
+    </Content>
     <Content Include="Content\bootstrap-grid.css" />
     <Content Include="Content\bootstrap-grid.min.css" />
     <Content Include="Content\bootstrap-reboot.css" />
     <Content Include="Content\bootstrap-reboot.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\Formats.css" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="images\like.png" />
+    <Content Include="images\loading.gif" />
+    <Content Include="images\Logo2.png" />
+    <Content Include="images\Logo3.png" />
+    <Content Include="images\Logo5.png" />
+    <Content Include="images\Logo6.png" />
+    <Content Include="images\unlike.png" />
+    <Content Include="images\upvote2.png" />
+    <Content Include="images\upvote.jpg" />
     <Content Include="images\defaultthumbnail.png" />
     <Content Include="images\defaultthumbnail2.png" />
+    <Content Include="images\dots.png" />
+    <Content Include="images\pfp.jpg" />
+    <Content Include="images\user.png" />
+    <Content Include="Models\modelsPap3.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>modelsPap3.edmx</DependentUpon>
+      <LastGenOutput>modelsPap3.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="Models\modelsPap3.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>modelsPap3.edmx</DependentUpon>
+      <LastGenOutput>modelsPap3.cs</LastGenOutput>
+    </Content>
+    <Content Include="ModelTeste.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>ModelTeste.edmx</DependentUpon>
+      <LastGenOutput>ModelTeste.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="ModelTeste.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>ModelTeste.edmx</DependentUpon>
+      <LastGenOutput>ModelTeste.cs</LastGenOutput>
+    </Content>
+    <Content Include="MyScripts\JavaScript.js" />
+    <Content Include="MyScripts\StyleSheet1.css" />
     <Content Include="Scripts\bootstrap.bundle.js" />
     <Content Include="Scripts\bootstrap.bundle.min.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="Scripts\ComunScripts.js" />
     <Content Include="Scripts\esm\popper-utils.js" />
     <Content Include="Scripts\esm\popper-utils.min.js" />
     <Content Include="Scripts\esm\popper.js" />
@@ -170,12 +277,32 @@
     <Content Include="Content\bootstrap-reboot.css.map" />
     <Content Include="Content\bootstrap-grid.min.css.map" />
     <Content Include="Content\bootstrap-grid.css.map" />
+    <EntityDeploy Include="ModelTeste.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>ModelTeste.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <Content Include="ModelTeste.edmx.diagram">
+      <DependentUpon>ModelTeste.edmx</DependentUpon>
+    </Content>
+    <EntityDeploy Include="Models\modelsPap3.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>modelsPap3.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <Content Include="Models\modelsPap3.edmx.diagram">
+      <DependentUpon>modelsPap3.edmx</DependentUpon>
+    </Content>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
     <Content Include="Scripts\jquery-3.3.1.min.js" />
     <Content Include="Scripts\jquery-3.3.1.slim.js" />
     <Content Include="Scripts\jquery-3.3.1.slim.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
+    <Content Include="Scripts\jquery.unobtrusive-ajax.js" />
+    <Content Include="Scripts\jquery.unobtrusive-ajax.min.js" />
     <Content Include="Scripts\jquery.validate.js" />
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
@@ -278,10 +405,30 @@
     <Content Include="Scripts\popper-utils.js.map" />
     <Content Include="Views\Shared\LayoutPAP.cshtml" />
     <Content Include="Views\Home\Search.cshtml" />
+    <Content Include="Views\Home\profile.cshtml" />
+    <Content Include="Views\Home\Video.cshtml" />
+    <Content Include="Views\Home\NotFound.cshtml" />
+    <Content Include="Views\Home\VideoComments.cshtml" />
+    <Content Include="Views\Account\UploadVideo.cshtml" />
+    <Content Include="Views\Login\Index.cshtml" />
+    <Content Include="Views\Shared\LayoutPAPLogedin.cshtml" />
+    <Content Include="Views\Home\CommentSection.cshtml" />
+    <Content Include="Views\Home\AddCommentForm.cshtml" />
+    <Content Include="Views\Account\index.cshtml" />
+    <Content Include="Views\Account\ChangeUsername.cshtml" />
+    <Content Include="Views\Shared\NavBarLogedIn.cshtml" />
+    <Content Include="Views\Home\SearchPage.cshtml" />
+    <Content Include="Views\Shared\NavBar.cshtml" />
+    <Content Include="Views\Home\VideoPage.cshtml" />
+    <Content Include="Views\Home\CommentSectionPartial.cshtml" />
+    <Content Include="Views\Login\LoginPage.cshtml" />
+    <Content Include="Views\Home\ProfilePage.cshtml" />
+    <Content Include="Views\Home\UserVideos.cshtml" />
+    <Content Include="Views\Login\SigninPage.cshtml" />
+    <Content Include="Views\Account\UploadVideoPage.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="App_Data\" />
-    <Folder Include="Models\" />
+    <Folder Include="Videos\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -293,6 +440,7 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

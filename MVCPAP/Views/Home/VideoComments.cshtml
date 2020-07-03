@@ -1,0 +1,8 @@
+﻿
+@foreach (var item in ViewBag.Comments)
+{
+    <div class="row CommentDiv">
+        <span id="@item.discriminator-@item.username" class="VideoAuthor">@item.discriminator#@item.username</span>
+        <p>@item.comment</p>
+    </div>
+}

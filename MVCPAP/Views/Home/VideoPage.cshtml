@@ -1,0 +1,337 @@
+﻿@model MVCPAP.Models.Video
+@{
+
+    Layout = "~/Views/Shared/NavBar.cshtml";
+
+    int Upvoted = 0;
+
+    int loggedIn = 0;
+
+    string username = "";
+    int discriminator = 0;
+
+    if (Session["userId"] != null)
+    {
+        username = Session["userId"].ToString().Split('-')[1];
+        discriminator = int.Parse(Session["userId"].ToString().Split('-')[0]);
+
+        MVCPAP.Models.User user = new MVCPAP.Models.User();
+        user.username = username;
+        user.discriminator = discriminator;
+
+        List<MVCPAP.Models.User> userupvote = Model.upvotes.Where(x => x.discriminator == discriminator && x.username == username).ToList();
+        if (userupvote.Count >= 1)
+        {
+            Upvoted = 1;
+        }
+        loggedIn = 1;
+
+        List<MVCPAP.Models.User> userView = Model.views.Where(x => x.discriminator == discriminator && x.username == username).ToList();
+        if (userView.Count >= 1)
+        {
+
+        }
+        else
+        {
+            MVCPAP.Business.VideoBll videoBll = new MVCPAP.Business.VideoBll();
+            
+            videoBll.CreateVideoView(user,Model);
+            Model.views.Add(user);
+
+            //
+
+        }
+    }
+
+
+
+}
+
+<script>
+    $(function () {
+
+
+        var liked =@Upvoted;
+        var likes =@Model.upvotes.Count;
+        var logedin =@loggedIn ;
+                var EditCommentId;
+
+        if(logedin == 0) {
+            $("#LikeButton").attr('data-toggle', 'popover');
+            $("#ButtonAddComment").attr('data-toggle', 'popover');
+        }
+
+        $('[data-toggle="popover"]').popover();
+
+        $('[data-toggle="popover"]').on('click', function (e) {
+            $('[data-toggle="popover"]').not(this).popover('hide');
+        });
+
+        $(document).ready(function () {
+                        $(".commentoptions").hide();
+            $("#likeCount").text(likes);
+            if (liked == 1) {
+                $("#LikeButton").attr('src', '../../images/like.png');
+            }
+            else {
+                $("#LikeButton").attr('src', '../../images/unlike.png');
+            }
+
+        });
+
+        $("#LikeButton").click(function () {
+            if (logedin == 1) {
+                if (liked == 0) {
+                    $.ajax({
+                        url: "../../../Home/UpvoteVideo/" + @Model.id,
+                        type: "GET",
+                        error: function (response) {
+                            console.log(response);
+                        },
+                        success: function (response) {
+                            if (response = 'true') {
+                                $("#LikeButton").attr('src', '../../images/like.png');
+                                liked = 1;
+                                likes++;
+                                $("#likeCount").text(likes);
+                            }
+                        }
+                    });
+                }
+                else if (liked == 1) {
+                    $.ajax({
+                    url: "../../../Home/DownvoteVideo/" + @Model.id,
+                    type: "GET",
+                    error: function (response) {
+                        console.log(response);
+                    },
+                    success: function (response) {
+                        if (response == 'true') {
+                            $("#LikeButton").attr('src', '../../images/unlike.png');
+                            liked = 0;
+                            likes--;
+                            $("#likeCount").text(likes);
+                        }
+                    }
+                });
+
+
+                }
+            }
+        });
+
+        $("#ButtonAddComment").click(function () {
+            $("#ButtonAddComment").attr('value', 'Add comment');
+            if (logedin == 1) {
+                var text = $("#TextAddComment").val().trim();
+                if (text == null || text.trim() === "")
+                return;
+                var commentId;
+
+                if (EditCommentId == null) {
+                    $.ajax({
+                        url: "../../../Home/PostComment/" + @Model.id+"/" + text,
+                        type: "GET",
+                        error: function (response) {
+
+                        },
+                        success: function (response) {
+                            commentId = response.trim();
+                            $(".commentsection").append('<div id="' + commentId + '" class="comment dropdown show">' +
+                                '<a class="btn" href="#" role="button" id="dropdownMenuLink_'+commentId+'" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'+
+                                text +'</a>'+
+                                '<div id="options_' + commentId + '" aria-labelledby="dropdownMenuLink_'+commentId+'" class="dropdown-menu">' +
+                                '<span class="username dropdown-item">@discriminator#@username</span>' +
+                                '<span id="DC_' + commentId + '" class="deleteComment dropdown-item">Delete</span>' +
+                                '<span id="EC_' + commentId + '" class="editComment dropdown-item">Edit</span>' +
+                                '</div></div>');
+                            $(".commentoptions").hide();
+                            $("#TextAddComment").val("");
+                        }
+                    });
+                }
+                else if(EditCommentId>0) {
+                    $.ajax({
+                        url: "../../../Home/EditComment/" + EditCommentId+"/" + text,
+                        type: "GET",
+                        error: function (response) {
+                            EditCommentId = null;
+                        },
+                        success: function (response) {
+                            commentId = EditCommentId;
+                            $("#" + EditCommentId).empty();
+                            $("#" + EditCommentId).append(
+                                '<a class="btn" href="#" role="button" id="dropdownMenuLink_' + commentId +
+                                '" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">' +
+                                text +'</a>'+
+                                '<div id="options_' + commentId + '" aria-labelledby="dropdownMenuLink_'+commentId+'" class="dropdown-menu">' +
+                                '<span class="username dropdown-item">@discriminator#@username</span>' +
+                                '<span id="DC_' + commentId + '" class="deleteComment dropdown-item">Delete</span>' +
+                                '<span id="EC_' + commentId + '" class="editComment dropdown-item">Edit</span>' +
+                                '</div>');
+                            $("#TextAddComment").val("");
+                            EditCommentId = null;
+                        }
+                    });
+                }
+            }
+        });
+
+        function keypressHandler(e) {
+            if (e.which == 13) {
+                if ($("#TextAddComment").is(":focus")) {
+                e.preventDefault();
+                $(this).blur();
+                $('#ButtonAddComment').focus().click();
+            }
+        }
+    }
+
+        $(document).keypress(keypressHandler);
+
+        $(".deleteComment").click(function (span) {
+            $("#ButtonAddComment").attr('value', 'Add comment');
+                                        $("#TextAddComment").val("");
+            $("#" + span.toElement.id).closest(".comment").fadeOut();
+            var id = $("#" + span.toElement.id).closest(".comment").attr('id');
+            $.ajax({
+                url: "../../../Home/DeleteComment/" + id,
+                type: "POST",
+                error: function (response) {
+                    console.log(response);
+                },
+                success: function (response) {
+                    console.log(response);
+                }
+            });
+        });
+
+        $(".editComment").click(function (span) {
+            if (logedin == 1) {
+                EditCommentId = $("#" + span.toElement.id).closest(".comment").attr('id');
+                var text = $("#" + span.toElement.id).closest(".comment").text().split('@discriminator#@username')[0].trim();
+            $("#TextAddComment").val(text);
+                $("#ButtonAddComment").attr('value', 'Edit comment');
+            }
+
+        });
+
+
+    });
+</script>
+
+
+
+<style>
+    #LikeButton {
+        width: 25px;
+    }
+
+    #title {
+        width: 60%;
+        float: left;
+        margin: auto;
+        margin-right: 0px;
+    }
+
+    #likeDiv {
+        width: 10%;
+        float: left;
+        margin: auto;
+        margin-left: 0px;
+    }
+
+    .username {
+        width: 20%;
+        float: right;
+        margin: auto;
+        margin-left: 0px;
+        margin-right: 10px;
+    }
+
+    #Comments {
+        width: 100%;
+        float: right;
+        margin: auto;
+        border: 1px solid #848484;
+        margin-left: 0px;
+        padding: 10px;
+    }
+
+    #DivComment {
+        width: 40%;
+        float: right;
+        margin: auto;
+        margin-left: 0px;
+        padding: 10px;
+        margin-top: 0px;
+    }
+
+    #addComment {
+        padding: 10px;
+        display: flex;
+    }
+
+        #addComment input {
+            margin: auto;
+            width: 30%;
+            border-radius: 0px;
+        }
+
+    #VideoBox {
+        width: 60%;
+        float: left;
+        margin: auto;
+        margin-right: 10px;
+    }
+
+    video {
+        /* override other styles to make responsive */
+        width: 100% !important;
+        height: auto !important;
+    }
+
+    .Content {
+        display: flex;
+    }
+
+    #playButton {
+        width: 10%;
+        height: 10%;
+        background-color: blue;
+    }
+</style>
+
+
+<div class="container container-fluid mb-5 mt-4 Content">
+    <div id="VideoBox">
+        <video id="videoplayer" controls="controls" autoplay="autoplay" preload="auto" title="@Model.title">
+            <source src="~/Videos/@Model.videoFile" type="video/mp4" />
+        </video>
+        <h2 id="title">@Model.title</h2>
+        Views <span>@Model.views.Count</span>
+        <div id="likeDiv">
+            <img src="~/images/unlike.png" id="LikeButton" alt="Like" title="Not logged in" data-content="To like, comment and fully enjoy query you must log in" />
+            <span id="likeCount"></span>
+        </div>
+        <span class="username">@Model.discriminator#@Model.username</span>
+    </div>
+
+    <div id="DivComment">
+
+
+        <div id="addComment">
+            <input id="TextAddComment" class="form-control border-success w-50 m-auto" type="text" name="name" value="" />
+            <input id="ButtonAddComment" class="btn btn-success" type="button" name="name" value="Add comment" title="Not logged in" data-content="To like, comment and fully enjoy query you must log in" />
+        </div>
+        <div id="Comments">
+            <h4>Comments</h4>
+
+            @{
+                MVCPAP.Business.CommentBll commentBll = new MVCPAP.Business.CommentBll();
+                List<MVCPAP.Models.Comment> comments = commentBll.GetCommentsByVideoId(Model.id);
+                Html.RenderPartial("CommentSectionPartial", comments);
+            }
+        </div>
+    </div>
+</div>

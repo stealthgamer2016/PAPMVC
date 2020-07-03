@@ -10,6 +10,10 @@
     <script>
         $(function () {
 
+            $("myForm").ready(function () {
+
+            });
+
             function keypressHandler(e) {
                 if (e.which == 13) {
                     e.preventDefault();
@@ -22,8 +26,8 @@
 
             $("#ButtonS").click(function () {
                 let Search = $("#Search").val();
-                if(Search && Search!="")
-                window.location.assign("../../../Home/Search/" + Search)
+                if (Search && Search != "")
+                    window.location.assign("../../../Home/Search/" + Search)
             });
         });
     </script>
@@ -34,38 +38,56 @@
 
         .searchDiv {
         }
-        .searchButton{
-            font-size:1.2em;
-            color:white;
-            vertical-align:central;
-            text-align:center;
-            float:left;
-            margin:auto;
+
+        .searchButton {
+            font-size: 1.2em;
+            color: white;
+            vertical-align: central;
+            text-align: center;
+            float: left;
+            margin: auto;
+            margin-left: 10px;
         }
-        .searchButton:hover{
-            cursor:pointer;
+
+            .searchButton:hover {
+                cursor: pointer;
+            }
+
+        #buttonLogin {
         }
+
+        .loginlink {
+            text-decoration: none;
+            color: black;
+            margin-right:20px;
+        }
+
+            .loginlink:hover {
+                text-decoration: none;
+                color: #505050;
+            }
     </style>
 </head>
 <body>
-    <form id="myForm">
-        <div class="navbar navbar-dark" style="background-color:gray;">
+    <div id="myForm">
+        <div class="navbar navbar-dark fixed-top" style="background-color:gray;">
             @Html.ActionLink("Nome", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
             <div class="row w-50">
 
-                <input type="text" id="Search" name="Search" value="" placeholder="Search" class="form-control form-control-sm text-dark" style="margin:auto" />
+                <input type="text" id="Search" name="Search" value="" placeholder="Search" class="form-control form-control-sm text-dark mr-0 w-75" style="margin:auto" />
                 <p id="ButtonS" class="searchButton">Search</p>
-                @*<button id="ButtonS2" type="submit">Search</button>
-                @Html.ActionLink("Search", "Search", "Home", new { id = "ok" }, new { @class = "navbar-brand" })*@
+            </div>
+
+            <div class="row">
+                @Html.ActionLink("Log in", "index", "Login", new { mode="login" }, new { @class = "loginlink" })
+                @Html.ActionLink("Sign in", "index", "Login",  new { mode="signin" }, new { @class = "loginlink" })
             </div>
 
 
-            <button class="btn btn-dark btn-sm"> Profile </button>
-
         </div>
-        <div class="container">
+        <div class="container mt-5 pt-3">
             @RenderBody()
         </div>
-    </form>
+    </div>
 </body>
 </html>

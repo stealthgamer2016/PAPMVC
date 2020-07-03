@@ -1,0 +1,105 @@
+﻿@{
+    bool LoggedIn = false;
+    if (Session["userId"] != null)
+    {
+        LoggedIn = true;
+    }
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+    <script src="~/Scripts/jquery-3.3.1.js"></script>
+    <link href="~/Content/bootstrap.css" rel="stylesheet" />
+    <script src="~/Scripts/bootstrap.bundle.js"></script>
+    <script src="~/MyScripts/JavaScript.js"></script>
+    <link href="~/MyScripts/StyleSheet1.css" rel="stylesheet" />
+    <style>
+        .UserProfile {
+            color: black !important;
+            font-size: 1Em !important;
+            margin: auto;
+        }
+        a.classname
+{
+    background: url(../images/Logo3.png) no-repeat top left;
+     display: block;
+
+     text-indent: -9999px; /* hides the link text */
+}
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top scrolling-navbar rgba-gradient">
+        <div class="container">
+
+            <a href='@Url.Action( "Index", "Home")'>
+                <img src="~/images/Logo6.png" width="75" alt="Alternate Text" />
+            </a>
+
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent-7">
+                <ul class="navbar-nav mr-auto smooth-scroll">
+                    <li>
+
+                    </li>
+
+                    <li>
+                        <div class="btn-group">
+                            @if (LoggedIn)
+                            {
+                                @Html.ActionLink(Session["userId"].ToString().Replace('-', '#'), "ProfilePage", "Home", new { id = Session["userId"] }, new { @class = "navbar-brand UserProfile" })
+                            }
+                            <button type="button" class="btn dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="sr-only">Toggle Dropdown</span>
+                                <img src="~/images/user.png" width="20" alt="Alternate Text" />
+                            </button>
+                            <div class="dropdown-menu">
+                                @if (LoggedIn)
+                                {
+
+                                    @Html.ActionLink("Profile", "ProfilePage", "Home", new { id = Session["userId"] }, new { @class = "dropdown-item" })
+                                    using (Html.BeginForm("Logout", "Login",new { returnTo=Request.Url.LocalPath },FormMethod.Post,new { @class="Nimporta" }))
+                                    {
+                                        <input type="submit" class="dropdown-item" name="name" value="Log out" />
+                                    }
+                                    <div class="dropdown-divider"></div>
+                                    @Html.ActionLink("Upload Video", "UploadVideoPage", "Account", new { id = "" }, new { @class = "dropdown-item" })
+                                }
+                                else
+                                {
+                                    @Html.ActionLink("Log in", "LoginPage", "Login", new { returnTo=Request.Url.LocalPath }, new { @class = "dropdown-item" })
+                                    @Html.ActionLink("Sign in", "SigninPage", "Login", new { mode = "signin" }, new { @class = "dropdown-item" })
+                                }
+                            </div>
+                        </div>
+                    </li>
+
+                </ul>
+                <form id="formsearch" class="form-inline" action="~/Home/SearchPage" method="post">
+                    <input id="SearchQuery" class="form-control mr-sm-2" name="SearchQuery" type="search" placeholder="Search" aria-label="Search">
+                    <button class="btn btn-outline-dark my-2 my-sm-0" type="submit">Search</button>
+                </form>
+            </div>
+        </div>
+    </nav>
+
+    @RenderBody()
+
+    @*<div class="rgba-gradient Cover">
+
+        </div>*@
+
+    @*<div class="position-fixed">
+            <h2>Fixed</h2>
+            texto texto teto textos
+        </div>*@
+
+
+</body>
+</html>
+

@@ -1,0 +1,92 @@
+﻿@model List<MVCPAP.Models.Comment>
+<script src="~/Scripts/ComunScripts.js"></script>
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+<link href="~/Content/Formats.css" rel="stylesheet" />
+<script>
+    $(function () {
+
+        $("#myForm").ready(function () {
+            $(".commentOptions").hide();
+            $(".LabelComment").hide();
+        });
+
+        $(".buttonOptions").click(function (b) {
+            var id = b.toElement.id.split('_')[1];
+            var WasVisible = $("#divOptions_" + id).is(":visible");
+            WasVisible = false;
+            $(".commentOptions").hide();
+            $("#divOptions_" + id).toggle();
+            if (WasVisible)
+                $("#divOptions_" + id).hide();
+        });
+
+
+
+        $(".EditComment").click(function (p) {
+            var id = p.toElement.id.split('_')[1];
+            var text = $("#labelComment_" + id).val();
+            if ($("#labelComment_" + id).is(':visible')) {
+                alert("is");
+                $.ajax({
+                    url: "../../../Home/EditComment/" + id + "?text=" + text,
+                    type: "GET",
+                    error: function (response) {
+                        console.log(response);
+                    },
+                    success: function (response) {
+                        console.log(response);
+                    }
+                });
+                $(".commentOptions").hide();
+            }
+            else
+                $("#labelComment_" + id).toggle();
+
+        });
+
+        $(".DeleteCommentbtn").click(function (btn) {
+            var id = btn.toElement.id.split('_')[1];
+
+            alert(id);
+
+            $("#comment_" + id).remove();
+        });
+
+    });
+
+</script>
+
+<div class="row">
+
+    @foreach (var item in Model)
+    {
+        if (item.user.discriminator >= 0 && item.user.username != "")
+        {
+            <div class="row CommentDiv" id="comment_@item.id">
+                <span id="@item.user.discriminator-@item.user.username" class="VideoAuthor">@item.user.discriminator#@item.user.username</span>
+                <p> @item.comment</p>
+                @*<span>@item.upvotes</span>*@
+                @*<img id="imgUp_@item.id" class="buttonUpvote" width="20"height="20" src="~/images/upvote2.png" alt="Upvote" />*@
+                @if (Session["userId"] != null)
+                {
+                    if (item.user.discriminator == int.Parse(Session["userId"].ToString().Split('-')[0]) && item.user.username == Session["userId"].ToString().Split('-')[1])
+                    {
+                        <img id="buttonOptions_@item.id" class="buttonOptions" src="~/images/dots.png" />
+
+                        <div class="commentOptions" id="divOptions_@item.id">
+                            <p id="deleteComment_@item.id" class="DeleteComment">Delete</p>
+
+                            @using (Html.BeginForm("DeleteComment", "Home", new { id = item.id, id2 = item.video }, FormMethod.Post))
+                            {
+                                <input type="submit" name="name" id="Delete_@item.id" class="DeleteCommentbtn" value="Fucking delete" />
+                            }
+
+                            <p id="editComment_@item.id" class="EditComment">Edit</p>
+                            <input type="text" id="labelComment_@item.id" max="1000" class="LabelComment" value="@item.comment" />
+                        </div>
+                    }
+                }
+            </div>
+        }
+    }
+</div>

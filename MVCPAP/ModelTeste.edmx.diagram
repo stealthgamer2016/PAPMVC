@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="5af47a1005584bd593ae3f8e06065ae3" Name="Diagram1" ZoomLevel="81">
+        <EntityTypeShape EntityType="DB1Model.Comment" Width="1.5" PointX="4.875" PointY="4.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="DB1Model.User" Width="1.5" PointX="8" PointY="4.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="DB1Model.Video" Width="1.5" PointX="6" PointY="7.875" IsExpanded="true" />
+        <AssociationConnector Association="DB1Model.FK__Comment__68487DD7" ManuallyRouted="false" />
+        <AssociationConnector Association="DB1Model.FK__Comment__video__628FA481" ManuallyRouted="false" >
+        </AssociationConnector>
+        <AssociationConnector Association="DB1Model.FK__Video__5FB337D6" ManuallyRouted="false" />
+        <AssociationConnector Association="DB1Model.Follow" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

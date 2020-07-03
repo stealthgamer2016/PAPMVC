@@ -15,8 +15,8 @@ namespace MVCPAP
 
             routes.MapRoute(
                 name: "Default",
-                url: "{controller}/{action}/{id}",
-                defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional }
+                url: "{controller}/{action}/{id}/{id2}",
+                defaults: new { controller = "Login", action = "LoginPage", id = UrlParameter.Optional, id2 = UrlParameter.Optional }
             );
         }
     }

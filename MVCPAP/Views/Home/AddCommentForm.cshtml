@@ -1,0 +1,60 @@
+﻿@model MVCPAP.Models.Comment
+<script src="~/Scripts/ComunScripts.js"></script>
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+<link href="~/Content/Formats.css" rel="stylesheet" />
+<script>
+        $(function () {
+
+        $("#buttonAddCommentSend").click(function () {
+            var text = $("#textComment2").val();
+            $("#textComment").focus();
+            if (!text || text == undefined || text == '') return;
+            $.ajax({
+                url: "../../../Home/PostComment/" + @ViewBag.id + "/" + text,
+                type: "POST",
+                error: function (response) {
+                    console.log(response);
+                },
+                success: function (response) {
+                    console.log(response);
+                }
+            });
+
+        $("#AddCommentDiv").hide();
+        $("#buttonAddComment").show();
+        $("#textComment").val('');
+
+        });
+
+        $("#buttonAddComment").click(function (b) {
+
+            var userId = "@Session["userId"]";
+            if (userId != null && userId != undefined && userId != '') {
+            $("#AddCommentDiv").show();
+            $("#textComment").focus();
+            $("#buttonAddComment").hide();
+            }
+            else {
+            $("#AddCommentError").toggle();
+            $("#AddCommentError").text('Not logged in');
+            }
+
+        });
+
+
+    });
+</script>
+<div id="AddCommentDiv" class="AddCommentDiv">
+    @{
+        using (Html.BeginForm("PostComment", "Home", new { id = Model.video.id }, FormMethod.Post))
+        {
+            @Html.EditorFor(Model => Model.comment);
+            @*<input type="text" id="textComment2" name="name" value="" />
+                <input type="button" id="buttonAddCommentSend" name="name" value="Send" />*@
+            <input type="submit" value="Submit" />
+            <span id="cancelComment" class="CancelSmall">Cancel</span>
+        }
+    }
+</div>
+<input type="button" value="Add comment" class="form-control" id="buttonAddComment" />
+<label id="AddCommentError"></label>

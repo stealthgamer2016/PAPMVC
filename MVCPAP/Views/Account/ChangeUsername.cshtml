@@ -1,0 +1,10 @@
+﻿@model MVCPAP.Models.User
+@{
+    Layout = "~/Views/Shared/NavBar.cshtml";
+}
+
+
+@using (Html.BeginForm("UpdateUsername","Account",FormMethod.Post)) {
+    <span>@Model.discriminator#</span><input type="text" name="newusername" maxlength="100" class="w-50" value="@Model.username" />
+    <input type="submit" name="name" value="Change" />
+}

@@ -1,0 +1,78 @@
+﻿@model List<MVCPAP.Models.Comment>
+
+<style>
+    .comment {
+        width: auto;
+        float: left;
+        margin: 10px;
+        background-color: #28a745;
+        position: relative;
+        color: black;
+        display: flex;
+        /*opacity:0.9;*/
+        /*padding: 10px;*/
+        /*border-radius:5px;*/
+        /*border:1px solid black;*/
+    }
+
+        .comment:hover {
+            background-color: #27bc49;
+        }
+
+    .commenttext {
+        margin: auto;
+    }
+
+
+    .commentoptions {
+        display: grid;
+        padding: 5px;
+        position: relative;
+        height: fit-content;
+        font-size: 0.9em;
+        position: absolute;
+        top: 0;
+        left: 100%;
+        background-color: white;
+        z-index: 10;
+        border: 1px solid black;
+    }
+    .username.dropdown-item{
+        float:left;
+        text-align:left;
+    }
+</style>
+<div class="commentsection">
+    @foreach (MVCPAP.Models.Comment comment in Model)
+    {
+
+    <div id="@comment.id" class="comment dropdown show">
+
+
+        <a class="btn" href="#" role="button" id="dropdownMenuLink_@comment.id" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            @comment.comment
+        </a>
+
+        <div id="options_@comment.id" aria-labelledby="dropdownMenuLink_@comment.id" class="dropdown-menu">
+            <span class="username dropdown-item">@comment.discriminator#@comment.username</span>
+            @if (Session["userId"] != null)
+            {
+                int discriminator = int.Parse(Session["userId"].ToString().Split('-')[0]);
+                string username = Session["userId"].ToString().Split('-')[1];
+                if (comment.discriminator == discriminator && comment.username == username)
+                {
+                    <span id="DC_@comment.id" class="deleteComment dropdown-item">Delete</span>
+                    <span id="EC_@comment.id" class="editComment dropdown-item">Edit</span>
+                }
+            }
+
+        </div>
+
+
+
+    </div>
+
+
+
+    }
+</div>

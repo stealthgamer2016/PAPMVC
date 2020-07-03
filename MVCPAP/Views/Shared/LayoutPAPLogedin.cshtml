@@ -1,0 +1,85 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Nome - @ViewBag.Title</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    <script src="~/Scripts/jquery-3.3.1.js"></script>
+    <script>
+        $(function () {
+
+            $("myForm").ready(function () {
+
+            });
+
+            function keypressHandler(e) {
+                if (e.which == 13) {
+                    e.preventDefault();
+                    $(this).blur();
+                    $('#ButtonS').focus().click();
+                }
+            }
+
+            $('#myForm').keypress(keypressHandler);
+
+            $("#ButtonS").click(function () {
+                let Search = $("#Search").val();
+                if (Search && Search != "")
+                    window.location.assign("../../../Home/Search/" + Search)
+            });
+        });
+    </script>
+    <style>
+        body {
+            padding-top: 0px;
+        }
+
+        .searchDiv {
+        }
+
+        .searchButton {
+            font-size: 1.2em;
+            color: white;
+            vertical-align: central;
+            text-align: center;
+            float: left;
+            margin: auto;
+            margin-left: 10px;
+        }
+
+            .searchButton:hover {
+                cursor: pointer;
+            }
+    </style>
+    <link href="~/Content/Formats.css" rel="stylesheet" />
+    <script src="~/Scripts/ComunScripts.js"></script>
+</head>
+<body>
+    <img src="~/images/loading.gif" id="loading" alt="Alternate Text" />
+
+    <div id="myForm">
+        <div class="navbar navbar-dark fixed-top" style="background-color:gray;">
+            @Html.ActionLink("Nome", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+            <div class="row w-50">
+
+                <input type="text" id="Search" name="Search" value="" placeholder="Search" class="form-control form-control-sm text-dark mr-0 w-75" style="margin:auto" />
+                <p id="ButtonS" class="searchButton">Search</p>
+            </div>
+            <div class="row">
+                @using (Html.BeginForm("Logout","Login",FormMethod.Post))
+                {
+                <input type="submit" name="name" value="Log fucking out" />
+                }
+                @Html.ActionLink(Session["userId"].ToString().Replace('-', '#'), "index", "Account", new { id = "" }, new { @class = "navbar-brand" })
+            </div>
+
+
+        </div>
+        <div class="container mt-5 pt-3">
+            @RenderBody()
+        </div>
+    </div>
+</body>
+</html>
