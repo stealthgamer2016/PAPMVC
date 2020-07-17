@@ -161,6 +161,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>modelsPap3.edmx</DependentUpon>
     </Compile>
+    <Compile Include="Models\Tag.cs" />
     <Compile Include="Models\User.cs">
       <DependentUpon>modelsPap3.tt</DependentUpon>
     </Compile>
@@ -426,6 +427,7 @@
     <Content Include="Views\Home\UserVideos.cshtml" />
     <Content Include="Views\Login\SigninPage.cshtml" />
     <Content Include="Views\Account\UploadVideoPage.cshtml" />
+    <Content Include="Views\Home\RecommendedVideosPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Videos\" />

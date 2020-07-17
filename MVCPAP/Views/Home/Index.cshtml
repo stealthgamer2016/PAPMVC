@@ -6,10 +6,24 @@
     <div class="container px-md-3 mt-5 px-sm-0 Content">
         <img src="~/images/Logo6.png" width="300" alt="Alternate Text" />
         <br /><br /><br />
-        <h2>Main page</h2>
+        <h2>Recommended Videos:</h2>
+        <br />
 
-        <p>here videos will be displayed</p>
 
+        @foreach (MVCPAP.Models.Video video in Model)
+        {
+            <div id="@video.id" class="Video">
+                <div id="One_@video.id" class="one">
+                    <img id="Img_@video.id" src="~/images/@video.thumbnail" alt="Alternate Text" />
+                </div>
+                <div id="Two_@video.id" class="two">
+                    <h2 id="Title_@video.id">
+                        @video.title
+                    </h2>
 
+                    <span id="User_@video.id" class="username">@video.discriminator#@video.username</span>
+                </div>
+            </div>
+        }
 
     </div>

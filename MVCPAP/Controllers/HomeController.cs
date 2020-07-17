@@ -16,7 +16,24 @@ namespace MVCPAP.Controllers
     {
         public ActionResult Index()
         {
-            return View();
+
+            VideoBll videoBll = new VideoBll();
+
+            List<Models.Video> videos = new List<Models.Video>();
+
+            if (Session["userId"] != null)
+            {
+                string usernameString = Session["userId"].ToString();
+
+                User user = new User();
+                user.username = usernameString.Split('-')[1];
+                user.discriminator = int.Parse(usernameString.Split('-')[0]);
+
+                videos = videoBll.GetRecomendedVideos(user);
+            }
+
+
+            return View(videos);
         }
 
         public ActionResult About()
@@ -213,7 +230,7 @@ namespace MVCPAP.Controllers
         }
 
         //[HttpPost]
-        public ActionResult PostComment(int id,string id2)
+        public ActionResult PostComment(int id, string id2)
         {
             if (Session["userId"] == null)
                 throw new Exception("uiuiui");
@@ -285,7 +302,7 @@ namespace MVCPAP.Controllers
 
             Models.Comment comment = commentBll.GetCommentById(id);
 
-            if(comment==null)
+            if (comment == null)
                 return new ContentResult() { Content = "false" };
 
             string usernameString = Session["userId"].ToString();
@@ -293,7 +310,7 @@ namespace MVCPAP.Controllers
             int discriminator = int.Parse(usernameString.Split('-')[0]);
             string username = usernameString.Split('-')[1];
 
-            if (comment.username != username || comment.discriminator!=discriminator)
+            if (comment.username != username || comment.discriminator != discriminator)
                 return new ContentResult() { Content = "false" };
 
             commentBll.EditCommentById(id, id2);

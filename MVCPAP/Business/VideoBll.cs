@@ -40,7 +40,7 @@ namespace MVCPAP.Business
             video.videoFile = row["videoFile"].ToString();
             video.thumbnail = row["thumbnail"].ToString();
             video.publishedAt = DateTime.Parse(row["publishedAt"].ToString());
-            video.User = userBll.GetUserById(video.discriminator+"-"+video.username);
+            video.User = userBll.GetUserById(video.discriminator + "-" + video.username);
             video.comments = commentBll.GetCommentsByVideoId(video.id);
             video.upvotes = GetVideoUpvotesByVideoId(video.id);
             video.views = GetVideoViewsByVideoId(video.id);
@@ -153,7 +153,7 @@ namespace MVCPAP.Business
             SqlDataAdapter dataAdapter = new SqlDataAdapter(
            "Select * " +
            " From VideoUpvotes" +
-           " Where video = "+id, connection);
+           " Where video = " + id, connection);
             DataSet dataSet = new DataSet();
             dataAdapter.Fill(dataSet);
 
@@ -203,23 +203,24 @@ namespace MVCPAP.Business
         public Models.Video CreateVideo(Models.User user, Models.Video video)
         {
             SqlConnection connection = new SqlConnection(Properties.Settings.Default.Connection);
-            SqlCommand command = new SqlCommand();
-            command.Connection = connection;
-            command.CommandType = CommandType.Text;
-            command.CommandText = "INSERT Video(title,description,username,discriminator,publishedAt,videoFile,thumbnail) Values (@title,@description,@username,@disc,@date,@file,@thumbnail)";
-            command.Parameters.AddWithValue("title", video.title);
-            command.Parameters.AddWithValue("username", user.username);
-            command.Parameters.AddWithValue("disc", user.discriminator);
-            command.Parameters.AddWithValue("date", DateTime.Now);
-            command.Parameters.AddWithValue("file", video.videoFile);
-            command.Parameters.AddWithValue("thumbnail", video.thumbnail);
-            command.Parameters.AddWithValue("description", video.description);
+            //SqlCommand command = new SqlCommand();
+            //command.Connection = connection;
+            //command.CommandType = CommandType.Text;
+            //command.CommandText = "INSERT Video(title,description,username,discriminator,publishedAt,videoFile,thumbnail) Values (@title,@description,@username,@disc,@date,@file,@thumbnail)";
+            //command.Parameters.AddWithValue("title", video.title);
+            //command.Parameters.AddWithValue("username", user.username);
+            //command.Parameters.AddWithValue("disc", user.discriminator);
+            //command.Parameters.AddWithValue("date", DateTime.Now);
+            //command.Parameters.AddWithValue("file", video.videoFile);
+            //command.Parameters.AddWithValue("thumbnail", video.thumbnail);
+            //command.Parameters.AddWithValue("description", video.description);
+            //command.Parameters.AddWithValue("description", video.tags);
             //connection.Open();
             //command.ExecuteNonQuery();
 
             //connection.Close();
 
-            string com= "INSERT Video(title,description,username,discriminator,publishedAt,videoFile,thumbnail) Output inserted.id Values (@title,@description,@username,@disc,@date,@file,@thumbnail)";
+            string com = "INSERT Video(title,description,username,discriminator,publishedAt,videoFile,thumbnail) Output inserted.id Values (@title,@description,@username,@disc,@date,@file,@thumbnail)";
             //com = com.Replace("@title", video.title);
             //com = com.Replace("@username", user.username);
             //com = com.Replace("@disc", user.discriminator.ToString());
@@ -246,8 +247,22 @@ namespace MVCPAP.Business
 
             DataRow row = dataSet.Tables[0].Rows[0];
 
-            video.id= int.Parse(row["id"].ToString());
+            video.id = int.Parse(row["id"].ToString());
 
+
+            foreach (Models.Tag tag in video.tags)
+            {
+                SqlCommand command = new SqlCommand();
+                command.Connection = connection;
+                command.CommandType = CommandType.Text;
+                command.CommandText = "INSERT Tag(video,tag) Values (@video,@tag)";
+                command.Parameters.AddWithValue("video", video.id);
+                command.Parameters.AddWithValue("tag", tag.text);
+
+                connection.Open();
+                command.ExecuteNonQuery();
+                connection.Close();
+            }
 
             return video;
         }
@@ -267,7 +282,8 @@ namespace MVCPAP.Business
             connection.Close();
         }
 
-        public void DeleteVideoUpvote(Models.User user, Models.Video video) {
+        public void DeleteVideoUpvote(Models.User user, Models.Video video)
+        {
             SqlConnection connection = new SqlConnection(Properties.Settings.Default.Connection);
             SqlCommand command = new SqlCommand();
             command.Connection = connection;
@@ -281,7 +297,8 @@ namespace MVCPAP.Business
             connection.Close();
         }
 
-        public void CreateVideoView(Models.User user, Models.Video video) {
+        public void CreateVideoView(Models.User user, Models.Video video)
+        {
             SqlConnection connection = new SqlConnection(Properties.Settings.Default.Connection);
             SqlCommand command = new SqlCommand();
             command.Connection = connection;
@@ -295,5 +312,98 @@ namespace MVCPAP.Business
 
             connection.Close();
         }
+
+
+        public List<Models.Video> GetRecomendedVideos(Models.User user)
+        {
+
+            SqlConnection connection = new SqlConnection(Properties.Settings.Default.Connection);
+
+            SqlDataAdapter dataAdapter = new SqlDataAdapter("Select Top(10) T.tag,COUNT(T.tag) AS 'value_occurrence'"
++ " From VideoUpvotes VU"
++ " Join Video V On VU.video = V.id"
++ " Join Tag T On T.video = V.id"
++ " Where VU.discriminator = '" + user.discriminator + "'And VU.username = '" + user.username + "'"
++ " group by T.tag"
++ " Order by 'value_occurrence' desc", connection);
+
+            DataSet dataSet = new DataSet();
+            dataAdapter.Fill(dataSet);
+
+
+            string Commandtext = "Select Distinct Top(10) V.title,Count(VU.video),V.[id],[title],[description],V.[username],V.[discriminator],[videoFile],[thumbnail],[publishedAt] AS 'LikeCount' From Video V Join Tag T On T.video = V.id Join VideoUpvotes VU On VU.video = V.id "
++ " Where T.tag like '@tag0' Or T.tag like '@tag1' Or T.tag like '@tag2' Or T.tag like '@tag3' Or T.tag like '@tag4' Or T.tag like '@tag5' Or T.tag like '@tag6' Or T.tag like '@tag7' "
++ "Or T.tag like '@tag8' Or T.tag like '@tag9' Group by V.title, T.tag,V.[id],[title],[description],V.[username],V.[discriminator],[videoFile],[thumbnail],[publishedAt] Order by 'LikeCount'";
+
+
+
+            for (int i = 0; i < dataSet.Tables[0].Rows.Count; i++)
+            {
+                Commandtext = Commandtext.Replace("'@tag" + i + "'", "'%" + dataSet.Tables[0].Rows[i]["tag"] + "%'");
+            }
+
+            SqlDataAdapter dataAdapter2 = new SqlDataAdapter(Commandtext, connection);
+            DataSet dataSet2 = new DataSet();
+            dataAdapter2.Fill(dataSet2);
+
+            List<Models.Video> Videos = new List<Models.Video>();
+
+            foreach (DataRow row in dataSet2.Tables[0].Rows)
+            {
+                Models.Video video = new Models.Video();
+
+                video.id = int.Parse(row["id"].ToString());
+                video.title = row["title"].ToString();
+                video.description = row["description"].ToString();
+                video.username = row["username"].ToString();
+                video.discriminator = int.Parse(row["discriminator"].ToString());
+                video.videoFile = row["videoFile"].ToString();
+                video.thumbnail = row["thumbnail"].ToString();
+                //video.publishedAt = DateTime.Parse(row["publishedAt"].ToString());
+
+                Videos.Add(video);
+            }
+
+            return Videos;
+
+        }
+
+
+        public List<Models.Video> GetRecomendedVideosByVideo(int videoId)
+        {
+
+            SqlConnection connection = new SqlConnection(Properties.Settings.Default.Connection);
+
+            SqlDataAdapter dataAdapter = new SqlDataAdapter("Select Distinct V.[id],[title],[description],[username],[discriminator],[videoFile],[thumbnail],[publishedAt]"
++ " From Video V Join Tag T On T.video = V.id"
++ " Where T.tag in (select tag from Tag Where video = "+videoId+") And V.id != "+videoId, connection);
+
+            DataSet dataSet = new DataSet();
+            dataAdapter.Fill(dataSet);
+
+
+            List<Models.Video> Videos = new List<Models.Video>();
+
+            foreach (DataRow row in dataSet.Tables[0].Rows)
+            {
+                Models.Video video = new Models.Video();
+
+                video.id = int.Parse(row["id"].ToString());
+                video.title = row["title"].ToString();
+                video.description = row["description"].ToString();
+                video.username = row["username"].ToString();
+                video.discriminator = int.Parse(row["discriminator"].ToString());
+                video.videoFile = row["videoFile"].ToString();
+                video.thumbnail = row["thumbnail"].ToString();
+                //video.publishedAt = DateTime.Parse(row["publishedAt"].ToString());
+
+                Videos.Add(video);
+            }
+
+            return Videos;
+
+        }
+
+
     }
 }

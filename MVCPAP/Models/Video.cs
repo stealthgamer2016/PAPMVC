@@ -20,6 +20,7 @@ namespace MVCPAP.Models
             this.comments = new HashSet<Comment>();
             this.views = new HashSet<User>();
             this.upvotes = new HashSet<User>();
+            this.tags = new HashSet<Tag>();
         }
     
         public int id { get; set; }
@@ -39,6 +40,9 @@ namespace MVCPAP.Models
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<User> upvotes { get; set; }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Tag> tags { get; set; }
         public virtual User User { get; set; }
 
         public string VideoUploadError { get; set; }

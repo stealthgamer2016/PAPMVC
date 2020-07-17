@@ -1,4 +1,5 @@
 ﻿using MVCPAP.Business;
+using MVCPAP.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -64,13 +65,20 @@ namespace MVCPAP.Controllers
         }
 
         [HttpPost]
-        public ActionResult PostVideo(HttpPostedFileBase file, Models.Video video)
+        public ActionResult PostVideo(HttpPostedFileBase file, Models.Video video, string tags)
         {
             Models.User user = new Models.User();
 
             user.username = Session["userId"].ToString().Split('-')[1];
             user.discriminator = int.Parse(Session["userId"].ToString().Split('-')[0]);
 
+
+            foreach (string tagtext in tags.Split(' ').ToList())
+            {
+                Models.Tag tag = new Tag();
+                tag.text = tagtext;
+                video.tags.Add(tag);
+            }
 
             //video.title = Request.QueryString.Get("title");
             //video.description = Request.QueryString.Get("description");

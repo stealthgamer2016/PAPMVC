@@ -333,5 +333,14 @@
                 Html.RenderPartial("CommentSectionPartial", comments);
             }
         </div>
+        <div>
+            <h3>Recommended Videos</h3>
+            @{
+                MVCPAP.Business.VideoBll VideoBll = new MVCPAP.Business.VideoBll();
+                List<MVCPAP.Models.Video> videos = VideoBll.GetRecomendedVideosByVideo(Model.id);
+                Html.RenderPartial("RecommendedVideosPartial", videos);
+            }
+
+        </div>
     </div>
 </div>

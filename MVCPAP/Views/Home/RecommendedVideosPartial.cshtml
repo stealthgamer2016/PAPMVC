@@ -1,0 +1,24 @@
+﻿@model List<MVCPAP.Models.Video>
+
+@foreach (MVCPAP.Models.Video video in Model)
+{
+    <div id="@video.id" class="Video">
+        <div id="One_@video.id" class="one">
+            <img id="Img_@video.id" src="~/images/@video.thumbnail" alt="Alternate Text" />
+        </div>
+        <div id="Two_@video.id" class="two">
+            <h2 id="Title_@video.id">
+                @video.title
+            </h2>
+
+            <span id="User_@video.id" class="username">@video.discriminator#@video.username</span>
+        </div>
+    </div>
+}
+
+@if (Model.Count == 0)
+{
+    <p>
+        We could not find ant related videos, sorry :(
+    </p>
+}
